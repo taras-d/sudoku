@@ -1,4 +1,30 @@
 
+/*
+    Example:
+
+    // Create sudoku with medium level
+    var sudoku = new Sudoku();
+
+    // Show matrix in console
+    sudoku.show();
+
+    // Set number in position 1-1
+    // (Set 0 to clear cell)
+    sudoku.setNumber(1, 1, 5);
+    sudoku.show();
+
+    // Check matrix
+    if (sudoku.check()) {
+        console.log('Well done!');
+    } else {
+        console.log(sudoku.errors);
+    }
+
+    // Start new game in Hard level
+    sudoku.newGame(Sudoku.Level.Hard);
+    sudoku.show();
+*/
+
 // Sudoku constructor
 function Sudoku(level) {
 
@@ -145,7 +171,6 @@ function Sudoku(level) {
                 ++i;
             }
         }
-
     };
 
     // Check squares of matrix
@@ -231,6 +256,7 @@ function Sudoku(level) {
 
 }
 
+// Level - how much matrix is empty in percentages
 Sudoku.Level = {
     Easy: 25,
     Medium: 50,

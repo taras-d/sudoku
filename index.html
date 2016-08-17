@@ -17,7 +17,26 @@
 
         <script>
 
+            // Create sudoku with medium level
             var sudoku = new Sudoku();
+
+            // Show matrix in console
+            sudoku.show();
+
+            // Set number in position 1-1
+            // (Set 0 to clear cell)
+            sudoku.setNumber(1, 1, 5);
+            sudoku.show();
+
+            // Check matrix
+            if (sudoku.check()) {
+                console.log('Well done!');
+            } else {
+                console.log(sudoku.errors);
+            }
+
+            // Start new game in Hard level
+            sudoku.newGame(Sudoku.Level.Hard);
             sudoku.show();
 
         </script>
