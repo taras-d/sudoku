@@ -168,7 +168,7 @@ QUnit.test('Check 5th column (2 repeat, 2 empty)', function(assert) {
 QUnit.test('Check all (7 repeat, 2 empty)', function(assert) {
 
     // Repeat number '7' four times at positions: 3-3, 3-7, 4-6, 8-7
-    // Tow empty at positions: 1-1, 7-1
+    // Two empty at positions: 1-1, 7-1
     sudoku.grid = [
         [5,3,4,  6,7,8,  9,1,2],
         [6,0,2,  1,9,5,  3,4,8], // <--
