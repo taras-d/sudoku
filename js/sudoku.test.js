@@ -8,12 +8,12 @@ function isErrorEqual(error, row, col, val, type) {
     );
 }
 
-QUnit.test('Check top left square (2 repeat)', function(assert) {
+QUnit.test('Check top left subgrid (2 repeat)', function(assert) {
 
     sudoku.errors = [];
 
     // Repeat number '3' twice at positions: 0-1, 0-2
-    sudoku.matrix = [
+    sudoku.grid = [
         [5,3,3,  6,7,8,  9,1,2], // <--
         [6,7,2,  1,9,5,  3,4,8],
         [1,9,8,  3,4,2,  5,6,7],
@@ -37,13 +37,13 @@ QUnit.test('Check top left square (2 repeat)', function(assert) {
 
 });
 
-QUnit.test('Check middle center square (2 repeat, 2 empty)', function(assert) {
+QUnit.test('Check middle center subgrid (2 repeat, 2 empty)', function(assert) {
 
     sudoku.errors = [];
 
     // Repeat number '5' twice at positions: 3-5, 4-4
     // Two empty at position 5-5
-    sudoku.matrix = [
+    sudoku.grid = [
         [5,3,4,  6,7,8,  9,1,2],
         [6,7,2,  1,9,5,  3,4,8],
         [1,9,8,  3,4,2,  5,6,7],
@@ -69,13 +69,13 @@ QUnit.test('Check middle center square (2 repeat, 2 empty)', function(assert) {
 
 });
 
-QUnit.test('Check bottom right square (4 repeat)', function(assert) {
+QUnit.test('Check bottom right subgrid (4 repeat)', function(assert) {
 
     sudoku.errors = [];
 
     // Repeat number '2' twice at positions: 6-6, 6-8
     // Repeat number '1' twice at positions: 8-6, 8-8
-    sudoku.matrix = [
+    sudoku.grid = [
         [5,3,4,  6,7,8,  9,1,2],
         [6,7,2,  1,9,5,  3,4,8],
         [1,9,8,  3,4,2,  5,6,7],
@@ -107,7 +107,7 @@ QUnit.test('Check 2nd row (3 repeat, 1 empty)', function(assert) {
 
     // Repeat number '3' three times at positions: 1-2, 1-4, 1-6
     // One empty at position 1-5
-    sudoku.matrix = [
+    sudoku.grid = [
         [5,3,4,  6,7,8,  9,1,2],
         [6,7,3,  1,3,0,  3,4,8], // <--
         [1,9,8,  3,4,2,  5,6,7],
@@ -139,7 +139,7 @@ QUnit.test('Check 5th column (2 repeat, 2 empty)', function(assert) {
 
     // Repeat number '8' at positions: 3-4, 8-4
     // Two empty at positions: 1-4, 5-4
-    sudoku.matrix = [
+    sudoku.grid = [
         [5,3,4,  6,7,8,  9,1,2],
         [6,7,2,  1,0,5,  3,4,8], // <--
         [1,9,8,  3,4,2,  5,6,7],
@@ -169,7 +169,7 @@ QUnit.test('Check all (7 repeat, 2 empty)', function(assert) {
 
     // Repeat number '7' four times at positions: 3-3, 3-7, 4-6, 8-7
     // Tow empty at positions: 1-1, 7-1
-    sudoku.matrix = [
+    sudoku.grid = [
         [5,3,4,  6,7,8,  9,1,2],
         [6,0,2,  1,9,5,  3,4,8], // <--
         [1,9,8,  3,4,2,  5,6,7],
@@ -205,6 +205,15 @@ QUnit.test('Check all (no errors)', function(assert) {
 
 });
 
+QUnit.test('Mix', function(assert) {
+
+    sudoku._copy();
+    sudoku._mix();
+
+    assert.notDeepEqual(sudoku.baseGrid, sudoku.grid);
+
+});
+
 var clearPer = sudoku._random(10, 91);
 QUnit.test('Clear ' + clearPer + '%', function(assert) {
 
@@ -212,10 +221,11 @@ QUnit.test('Clear ' + clearPer + '%', function(assert) {
     sudoku._clear(clearPer);
     sudoku.check();
 
-    var clearCount = Math.floor(81 * clearPer / 100),
+    var gridLen = sudoku.grid.length,
+        clearCount = Math.floor( (gridLen * gridLen) * clearPer / 100 ),
         allEmpty = true;
     for (var i = 0; i < sudoku.errors; ++i) {
-        if (sudoku.errors[i].type != Suodku.Error.Empty) {
+        if (sudoku.errors[i].type != Sudoku.Error.Empty) {
             allEmpty = false;
             break;
         }
@@ -223,6 +233,20 @@ QUnit.test('Clear ' + clearPer + '%', function(assert) {
 
     assert.ok(
         sudoku.errors.length == clearCount && allEmpty
+    );
+
+});
+
+QUnit.test('Set number', function(assert) {
+
+    assert.ok(
+        sudoku.setNumber(0, 0, 8),
+        'Valid number'
+    );
+
+    assert.ok(
+        !sudoku.setNumber(0, 0, 11),
+        'Invalid number'
     );
 
 });

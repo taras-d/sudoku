@@ -5,7 +5,7 @@
     // Create sudoku with medium level
     var sudoku = new Sudoku();
 
-    // Show matrix in console
+    // Show grid in console
     sudoku.show();
 
     // Set number in position 1-1
@@ -13,7 +13,7 @@
     sudoku.setNumber(1, 1, 5);
     sudoku.show();
 
-    // Check matrix
+    // Check grid
     if (sudoku.check()) {
         console.log('Well done!');
     } else {
@@ -28,8 +28,8 @@
 // Sudoku constructor
 function Sudoku(level) {
 
-    // Base matrix
-    this.baseMatrix = [
+    // Base grid
+    this.baseGrid = [
         [5,3,4,  6,7,8,  9,1,2],
         [6,7,2,  1,9,5,  3,4,8],
         [1,9,8,  3,4,2,  5,6,7],
@@ -43,8 +43,8 @@ function Sudoku(level) {
         [3,4,5,  2,8,6,  1,7,9]
     ];
 
-    // Generated matrix
-    this.matrix = [];
+    // Generated grid
+    this.grid = [];
 
     // Errors
     this.errors = [];
@@ -52,45 +52,47 @@ function Sudoku(level) {
     // New game
     this.newGame = function(level) {
         this.errors = [];
-        this._generateMatrix(level || Sudoku.Level.Medium);
+        this._generateGrid(level || Sudoku.Level.Medium);
     };
 
     // Set number in specific position
     this.setNumber = function(row, col, num) {
         num = Number(num);
-        if (num >= 0 || num <= 9) {
-            this.matrix[row][col] = num;
+        if (num >= 0 && num <= 9) {
+            this.grid[row][col] = num;
+            return true;
         }
+        return false;
     };
 
     // Check at errors
     this.check = function() {
       	this.errors = [];
-        this._checkSquares();
+        this._checkSubgrids();
         this._checkRows();
         this._checkCols();
         return (this.errors.length == 0);
     };
 
-    // Show matrix in console
+    // Show grid in console
     this.show = function() {
         console.log(this.toString());
     };
 
-    // Convert matrix to string
+    // Convert grid to string
     this.toString = function() {
-        var mtx = this.matrix,
+        var grid = this.grid,
             str = '\n';
-        for (var i = 0; i < mtx.length; ++i) {
+        for (var i = 0; i < grid.length; ++i) {
             if (i != 0 && i % 3 == 0) {
                 str += '-----------------------\n';
             }
             str += ' ';
-            for (var j = 0; j < mtx[i].length; ++j) {
+            for (var j = 0; j < grid[i].length; ++j) {
                 if (j != 0 && j % 3 == 0) {
                     str += '| ';
                 }
-                str += mtx[i][j];
+                str += grid[i][j];
                 str += this._hasError(i, j)? '*': ' ';
             }
             str += '\n';
@@ -98,23 +100,23 @@ function Sudoku(level) {
         return str;
     };
 
-    // Generate matrix.
-    // Instead of creating matrix from scratch, I copy base matrix and mix it
-    this._generateMatrix = function(level) {
+    // Generate grid.
+    // Instead of creating grid from scratch, I copy base grid and mix it
+    this._generateGrid = function(level) {
         this._copy();
         this._mix();
         this._clear(level);
     };
 
-    // Copy base matrix
+    // Copy base grid
     this._copy = function() {
-        this.matrix = [];
-        for (var i = 0; i < this.baseMatrix.length; ++i) {
-            this.matrix.push( this.baseMatrix[i].slice() );
+        this.grid = [];
+        for (var i = 0; i < this.baseGrid.length; ++i) {
+            this.grid.push( this.baseGrid[i].slice() );
         }
     };
 
-    // Mix matrix
+    // Mix grid
     this._mix = function() {
         this._swapRowsCols(0, 3);
         this._swapRowsCols(3, 6);
@@ -137,44 +139,44 @@ function Sudoku(level) {
 
     // Swap rows
     this._swapRows = function(row1, row2) {
-        var mtx = this.matrix, tmp;
-        for (var i = 0; i < mtx[row1].length; ++i) {
-            tmp = mtx[row1][i];
-            mtx[row1][i] = mtx[row2][i];
-            mtx[row2][i] = tmp;
+        var grid = this.grid, tmp;
+        for (var i = 0; i < grid[row1].length; ++i) {
+            tmp = grid[row1][i];
+            grid[row1][i] = grid[row2][i];
+            grid[row2][i] = tmp;
         }
     };
 
     // Swap columns
     this._swapCols = function(col1, col2) {
-        var mtx = this.matrix, tmp;
-        for (var i = 0; i < mtx.length; ++i) {
-            tmp = mtx[i][col1];
-            mtx[i][col1] = mtx[i][col2];
-            mtx[i][col2] = tmp;
+        var grid = this.grid, tmp;
+        for (var i = 0; i < grid.length; ++i) {
+            tmp = grid[i][col1];
+            grid[i][col1] = grid[i][col2];
+            grid[i][col2] = tmp;
         }
     }
 
-    // Clear matrix by specific amount of percents
+    // Clear grid by specific amount of percents
     this._clear = function(percent) {
-        var mtx = this.matrix,
-            mtxLen = mtx.length,
-            clearCount = Math.floor( (mtxLen * mtxLen) * percent / 100 ),
+        var grid = this.grid,
+            gridLen = grid.length,
+            clearCount = Math.floor( (gridLen * gridLen) * percent / 100 ),
             cleared = [],
             i = 0, row, col;
         while (i < clearCount) {
-            row = this._random(0, mtxLen);
-            col = this._random(0, mtxLen);
+            row = this._random(0, gridLen);
+            col = this._random(0, gridLen);
             if (cleared.indexOf(row + '-' + col) == -1) {
-                mtx[row][col] = 0;
+                grid[row][col] = 0;
                 cleared.push(row + '-' + col);
                 ++i;
             }
         }
     };
 
-    // Check squares of matrix
-    this._checkSquares = function() {
+    // Check subgrids
+    this._checkSubgrids = function() {
         this._checkRange(0, 2, 0, 2); // top left
         this._checkRange(0, 2, 3, 5); // top center
         this._checkRange(0, 2, 6, 8); // top right
@@ -186,28 +188,28 @@ function Sudoku(level) {
         this._checkRange(6, 8, 6, 8); // bottom right
     };
 
-    // Check matrix rows
+    // Check grid rows
     this._checkRows = function() {
-        var mtx = this.matrix;
-        for (var i = 0; i < mtx.length; ++i) {
-            this._checkRange(i, i, 0, mtx[i].length - 1);
+        var grid = this.grid;
+        for (var i = 0; i < grid.length; ++i) {
+            this._checkRange(i, i, 0, grid[i].length - 1);
         }
     };
 
-    // Check matrix columns
+    // Check grid columns
     this._checkCols = function() {
-        var mtx = this.matrix;
-        for (var i = 0; i < mtx.length; ++i) {
-            this._checkRange(0, mtx.length - 1, i, i);
+        var grid = this.grid;
+        for (var i = 0; i < grid.length; ++i) {
+            this._checkRange(0, grid.length - 1, i, i);
         }
     };
 
-    // Check matrix specific range
+    // Check grid specific range
     this._checkRange = function(rowStart, rowEnd, colStart, colEnd) {
-        var mtx = this.matrix,
+        var grid = this.grid,
             i, j, k, l;
         for (i = rowStart; i <= rowEnd; ++i) for (j = colStart; j <= colEnd; ++j) {
-            if (mtx[i][j] == 0) {
+            if (grid[i][j] == 0) {
                 this._addError(i, j, Sudoku.Error.Empty);
                 continue;
             }
@@ -215,7 +217,7 @@ function Sudoku(level) {
                 if (i == k && j == l) {
                     continue;
                 }
-                if (mtx[i][j] == mtx[k][l]) {
+                if (grid[i][j] == grid[k][l]) {
                     this._addError(i, j, Sudoku.Error.Repeat);
                 }
             }
@@ -230,12 +232,12 @@ function Sudoku(level) {
         }
         this.errors.push({
             row: row, col: col,
-            val: this.matrix[row][col],
+            val: this.grid[row][col],
             type: type
         });
     };
 
-    // Check whether matrix has error in specific position
+    // Check whether grid has error in specific position
     this._hasError = function(row, col) {
         var errs = this.errors;
         for (var i = 0; i < errs.length; ++i) {
@@ -256,7 +258,7 @@ function Sudoku(level) {
 
 }
 
-// Level - how much matrix is empty in percentages
+// Level - how much grid is empty in percentages
 Sudoku.Level = {
     Easy: 25,
     Medium: 50,
