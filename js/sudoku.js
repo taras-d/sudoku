@@ -9,7 +9,7 @@
     sudoku.show();
 
     // Set number in position 1-1
-    // (Set 0 to clear cell)
+    // (To clear cell - set 0)
     sudoku.setNumber(1, 1, 5);
     sudoku.show();
 
@@ -65,7 +65,7 @@ function Sudoku(level) {
         return false;
     };
 
-    // Check at errors
+    // Check grid
     this.check = function() {
       	this.errors = [];
         this._checkSubgrids();
@@ -81,18 +81,17 @@ function Sudoku(level) {
 
     // Convert grid to string
     this.toString = function() {
-        var grid = this.grid,
-            str = '\n';
-        for (var i = 0; i < grid.length; ++i) {
+        var str = '\n';
+        for (var i = 0; i < this.grid.length; ++i) {
             if (i != 0 && i % 3 == 0) {
                 str += '-----------------------\n';
             }
             str += ' ';
-            for (var j = 0; j < grid[i].length; ++j) {
+            for (var j = 0; j < this.grid[i].length; ++j) {
                 if (j != 0 && j % 3 == 0) {
                     str += '| ';
                 }
-                str += grid[i][j];
+                str += this.grid[i][j];
                 str += this._hasError(i, j)? '*': ' ';
             }
             str += '\n';
@@ -100,8 +99,7 @@ function Sudoku(level) {
         return str;
     };
 
-    // Generate grid.
-    // Instead of creating grid from scratch, I copy base grid and mix it
+    // Generate grid - copy base grid, mix and clear it
     this._generateGrid = function(level) {
         this._copy();
         this._mix();
@@ -118,49 +116,46 @@ function Sudoku(level) {
 
     // Mix grid
     this._mix = function() {
-        this._swapRowsCols(0, 3);
-        this._swapRowsCols(3, 6);
-        this._swapRowsCols(6, 9);
-    };
-
-    // Swap rows and columns in specific range
-    this._swapRowsCols = function(from, to) {
-        var i = 0, j, k;
-        while (i < 3) {
-            j = this._random(from, to);
-            k = this._random(from, to);
-            if (j != k) {
-                this._swapRows(j, k);
-                this._swapCols(j, k);
-                ++i;
-            }
+        var swapCount = this._random(2, 11); // 3-10
+        for (var i = 0; i < swapCount; ++i) {
+            // rows
+            this._swapRows( this._random(0, 2), this._random(0, 2) );
+            this._swapRows( this._random(3, 5), this._random(3, 5) );
+            this._swapRows( this._random(6, 8), this._random(6, 8) );
+            // columns
+            this._swapCols( this._random(0, 2), this._random(0, 2) );
+            this._swapCols( this._random(3, 5), this._random(3, 5) );
+            this._swapCols( this._random(6, 8), this._random(6, 8) );
         }
     };
 
     // Swap rows
     this._swapRows = function(row1, row2) {
-        var grid = this.grid, tmp;
-        for (var i = 0; i < grid[row1].length; ++i) {
-            tmp = grid[row1][i];
-            grid[row1][i] = grid[row2][i];
-            grid[row2][i] = tmp;
+        if (row1 == row2) {
+            return;
+        }
+        for (var i = 0, t; i < this.grid[row1].length; ++i) {
+            t = this.grid[row1][i];
+            this.grid[row1][i] = this.grid[row2][i];
+            this.grid[row2][i] = t;
         }
     };
 
     // Swap columns
     this._swapCols = function(col1, col2) {
-        var grid = this.grid, tmp;
-        for (var i = 0; i < grid.length; ++i) {
-            tmp = grid[i][col1];
-            grid[i][col1] = grid[i][col2];
-            grid[i][col2] = tmp;
+        if (col1 == col2) {
+            return;
+        }
+        for (var i = 0, t; i < this.grid.length; ++i) {
+            t = this.grid[i][col1];
+            this.grid[i][col1] = this.grid[i][col2];
+            this.grid[i][col2] = t;
         }
     }
 
     // Clear grid by specific amount of percents
     this._clear = function(percent) {
-        var grid = this.grid,
-            gridLen = grid.length,
+        var gridLen = this.grid.length,
             clearCount = Math.floor( (gridLen * gridLen) * percent / 100 ),
             cleared = [],
             i = 0, row, col;
@@ -168,7 +163,7 @@ function Sudoku(level) {
             row = this._random(0, gridLen);
             col = this._random(0, gridLen);
             if (cleared.indexOf(row + '-' + col) == -1) {
-                grid[row][col] = 0;
+                this.grid[row][col] = 0;
                 cleared.push(row + '-' + col);
                 ++i;
             }
@@ -190,34 +185,30 @@ function Sudoku(level) {
 
     // Check grid rows
     this._checkRows = function() {
-        var grid = this.grid;
-        for (var i = 0; i < grid.length; ++i) {
-            this._checkRange(i, i, 0, grid[i].length - 1);
+        for (var i = 0; i < this.grid.length; ++i) {
+            this._checkRange(i, i, 0, this.grid[i].length - 1);
         }
     };
 
     // Check grid columns
     this._checkCols = function() {
-        var grid = this.grid;
-        for (var i = 0; i < grid.length; ++i) {
-            this._checkRange(0, grid.length - 1, i, i);
+        for (var i = 0; i < this.grid.length; ++i) {
+            this._checkRange(0, this.grid.length - 1, i, i);
         }
     };
 
     // Check grid specific range
     this._checkRange = function(rowStart, rowEnd, colStart, colEnd) {
-        var grid = this.grid,
-            i, j, k, l;
-        for (i = rowStart; i <= rowEnd; ++i) for (j = colStart; j <= colEnd; ++j) {
-            if (grid[i][j] == 0) {
+        for (var i = rowStart; i <= rowEnd; ++i) for (var j = colStart; j <= colEnd; ++j) {
+            if (this.grid[i][j] == 0) {
                 this._addError(i, j, Sudoku.Error.Empty);
                 continue;
             }
-            for (k = rowStart; k <= rowEnd; ++k) for (l = colStart; l <= colEnd; ++l) {
+            for (var k = rowStart; k <= rowEnd; ++k) for (var l = colStart; l <= colEnd; ++l) {
                 if (i == k && j == l) {
                     continue;
                 }
-                if (grid[i][j] == grid[k][l]) {
+                if (this.grid[i][j] == this.grid[k][l]) {
                     this._addError(i, j, Sudoku.Error.Repeat);
                 }
             }
@@ -227,7 +218,6 @@ function Sudoku(level) {
     // Add error
     this._addError = function(row, col, type) {
         if (this._hasError(row, col)) {
-            // Skip duplicates
             return;
         }
         this.errors.push({
@@ -239,9 +229,9 @@ function Sudoku(level) {
 
     // Check whether grid has error in specific position
     this._hasError = function(row, col) {
-        var errs = this.errors;
-        for (var i = 0; i < errs.length; ++i) {
-            if (errs[i].row == row && errs[i].col == col) {
+        for (var i = 0; i < this.errors.length; ++i) {
+            if (this.errors[i].row == row &&
+                this.errors[i].col == col) {
                 return true;
             }
         }

@@ -205,6 +205,46 @@ QUnit.test('Check all (no errors)', function(assert) {
 
 });
 
+QUnit.test('Swap rows 1 and 2', function(assert) {
+
+    sudoku._copy();
+
+    var beforeRow0 = sudoku.grid[0].slice(),
+        beforeRow1 = sudoku.grid[1].slice();
+
+    sudoku._swapRows(0, 1);
+
+    var afterRow0 = sudoku.grid[0],
+        afterRow1 = sudoku.grid[1];
+
+    assert.deepEqual(beforeRow0, afterRow1);
+    assert.deepEqual(beforeRow1, afterRow0);
+
+});
+
+QUnit.test('Swap columns 1 and 2', function(assert) {
+
+    sudoku._copy();
+
+    var beforeCol0 = [], beforeCol1 = [];
+    for (var i = 0; i < sudoku.grid.length; ++i) {
+        beforeCol0.push( sudoku.grid[i][0] );
+        beforeCol1.push( sudoku.grid[i][1] );
+    }
+
+    sudoku._swapCols(0, 1);
+
+    var afterCol0 = [], afterCol1 = [];
+    for (var i = 0; i < sudoku.grid.length; ++i) {
+        afterCol0.push( sudoku.grid[i][0] );
+        afterCol1.push( sudoku.grid[i][1] );
+    }
+
+    assert.deepEqual(beforeCol0, afterCol1);
+    assert.deepEqual(beforeCol1, afterCol0);
+
+});
+
 QUnit.test('Mix', function(assert) {
 
     sudoku._copy();
