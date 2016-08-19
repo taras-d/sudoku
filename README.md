@@ -1,5 +1,5 @@
 # sudoku
 
-Sudoku is a logical game
+Logical game
 
 [Play](https://taras-d.github.io/sudoku/)
