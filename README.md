@@ -1,2 +1,2 @@
 # sudoku
-In progress...
+[Play](https://taras-d.github.io/sudoku/)
