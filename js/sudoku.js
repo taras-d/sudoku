@@ -250,9 +250,9 @@ function Sudoku(level) {
 
 // Level - how much grid is empty in percentages
 Sudoku.Level = {
-    Easy: 25,
-    Medium: 50,
-    Hard: 75
+    Easy: 40,
+    Medium: 60,
+    Hard: 80
 };
 
 Sudoku.Error = {

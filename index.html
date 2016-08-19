@@ -6,39 +6,94 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+        <link href="https://fonts.googleapis.com/css?family=Maven+Pro" rel="stylesheet">
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
         <script src="js/sudoku.js"></script>
         <script src="js/sudoku.ui.js"></script>
 
+        <link rel="stylesheet" href="css/styles.css">
+
     </head>
     <body>
 
+        <header class="main">Sudoku</header>
+
+        <div class="sudoku" id="sudoku">
+            <div class="grid-wrap">
+                <table class="grid">
+                    <tr>
+                        <td></td><td></td><td></td><td></td><td></td>
+                        <td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td></td><td></td><td></td><td></td><td></td>
+                        <td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td></td><td></td><td></td><td></td><td></td>
+                        <td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td></td><td></td><td></td><td></td><td></td>
+                        <td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td></td><td></td><td></td><td></td><td></td>
+                        <td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td></td><td></td><td></td><td></td><td></td>
+                        <td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td></td><td></td><td></td><td></td><td></td>
+                        <td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td></td><td></td><td></td><td></td><td></td>
+                        <td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td></td><td></td><td></td><td></td><td></td>
+                        <td></td><td></td><td></td><td></td>
+                    </tr>
+                </table>
+                <table class="keyboard">
+                    <tr>
+                        <td>1</td><td>2</td><td>3</td>
+                    </tr>
+                    <tr>
+                        <td>4</td><td>5</td><td>6</td>
+                    </tr>
+                    <tr>
+                        <td>7</td><td>8</td><td>9</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="clear">clear</td>
+                    </tr>
+                </table>
+                <div class="solved">
+                    <div class="cover"></div>
+                    <span class="text">Well Done!</span>
+                </div>
+            </div>
+            <div class="controls">
+                <div class="col left">
+                    <button class="new-game">New game</button>
+                </div>
+                <div class="col">
+                    <select class="level"></select>
+                </div>
+                <div class="col right">
+                    <button class="check">Check</button>
+                </div>
+            </div>
+        </div>
 
         <script>
-
-            // Create sudoku with medium level
-            var sudoku = new Sudoku();
-
-            // Show grid in console
-            sudoku.show();
-
-            // Set number in position 1-1
-            // (To clear cell - set 0)
-            sudoku.setNumber(1, 1, 5);
-            sudoku.show();
-
-            // Check grid
-            if (sudoku.check()) {
-                console.log('Well done!');
-            } else {
-                console.log(sudoku.errors);
-            }
-
-            // Start new game in Hard level
-            sudoku.newGame(Sudoku.Level.Hard);
-            sudoku.show();
-
+            new SudokuUI( $('#sudoku') );
         </script>
 
     </body>
