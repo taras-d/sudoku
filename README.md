@@ -2,4 +2,4 @@
 
 Logical game
 
-[Play](https://taras-d.github.io/sudoku/)
+[Play](https://taras-d.github.io/demo/sudoku/)
